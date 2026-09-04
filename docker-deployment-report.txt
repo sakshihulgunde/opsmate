@@ -1,0 +1,385 @@
+OPS MATE – DOCKER AND AWS DEPLOYMENT REPORT
+============================================
+
+Project Name:
+Containerizing and Deploying OpsMate Service Using Docker and AWS
+
+Application:
+OpsMate Service
+
+Technology Stack:
+Python, Flask, Docker, Docker Compose, PostgreSQL, Amazon ECR,
+Amazon ECS, AWS Fargate, Amazon CloudWatch, Git, GitHub, Linux/Ubuntu
+
+AWS Region:
+ap-south-1
+
+
+1. PROJECT OBJECTIVE
+--------------------
+
+The objective of this project was to containerize the OpsMate Flask
+application using Docker and deploy the containerized application on
+AWS using Amazon ECR, Amazon ECS, and AWS Fargate.
+
+The project demonstrates the following deployment workflow:
+
+Developer
+    |
+Dockerfile
+    |
+Docker Image
+    |
+Amazon ECR
+    |
+ECS Task Definition
+    |
+ECS Service
+    |
+AWS Fargate
+    |
+OpsMate Application
+
+
+2. APPLICATION
+--------------
+
+OpsMate is a Python Flask web application.
+
+The application listens on TCP port 5000.
+
+Application endpoints:
+
+/       - Verifies that the application is running
+/health - Application health check
+/db-test - Tests PostgreSQL database connectivity
+
+The application was successfully tested inside the Docker container.
+
+
+3. DOCKERFILE
+-------------
+
+The Dockerfile uses Python 3.12 slim as the base image.
+
+Main Dockerfile operations:
+
+- Use Python 3.12 slim base image
+- Set /app as the working directory
+- Copy requirements.txt
+- Install Python dependencies
+- Copy app.py
+- Expose port 5000
+- Start the Flask application
+
+Docker image build command:
+
+docker build -t opsmate:1.0 .
+
+
+4. DOCKER CONTAINER DEPLOYMENT
+------------------------------
+
+The Docker image was used to create the OpsMate container.
+
+Container configuration:
+
+Container name:
+opsmate-app
+
+Port mapping:
+
+5000:5000
+
+The container was successfully started using Docker.
+
+Verification command:
+
+docker ps
+
+The container status was verified as:
+
+UP / RUNNING
+
+
+5. APPLICATION VERIFICATION
+---------------------------
+
+The application was tested from the Ubuntu EC2 server.
+
+Command:
+
+curl http://localhost:5000
+
+Result:
+
+OpsMate Service v2 is running successfully!
+
+
+Health-check command:
+
+curl http://localhost:5000/health
+
+Result:
+
+OpsMate Health: OK
+
+Both endpoints returned successful responses.
+
+
+6. DOCKER LOG VERIFICATION
+--------------------------
+
+Docker logs were checked using:
+
+docker logs opsmate-app
+
+The logs confirmed that the Flask application started successfully
+and was listening on:
+
+0.0.0.0:5000
+
+The following HTTP requests were successfully processed:
+
+GET / HTTP/1.1 200
+GET /health HTTP/1.1 200
+
+This confirmed successful application execution inside the container.
+
+
+7. DOCKER COMPOSE
+-----------------
+
+Docker Compose was configured to run:
+
+- OpsMate application
+- PostgreSQL database
+
+The Compose configuration includes:
+
+- Application service
+- PostgreSQL 16 Alpine database
+- Application-to-database networking
+- PostgreSQL persistent volume
+- PostgreSQL health check
+- Application dependency on database health
+
+The Compose configuration was validated using:
+
+docker compose config
+
+The configuration was successfully validated without errors.
+
+
+8. AMAZON ECR
+-------------
+
+An Amazon Elastic Container Registry repository was created for
+the OpsMate Docker image.
+
+Repository:
+
+opsmate
+
+AWS Region:
+
+ap-south-1
+
+The Docker image was tagged and pushed to Amazon ECR.
+
+Image tag used for the AWS deployment:
+
+2.0
+
+The ECR image was successfully used by the ECS task definition.
+
+
+9. AMAZON ECS
+-------------
+
+The application was deployed using Amazon Elastic Container Service.
+
+ECS Cluster:
+
+opsmate-cluster
+
+ECS Service:
+
+opsmate-service
+
+Task Definition Family:
+
+opsmate-task
+
+Launch Type:
+
+AWS Fargate
+
+CPU:
+
+256
+
+Memory:
+
+512 MB
+
+Container Port:
+
+5000
+
+Desired Task Count:
+
+1
+
+
+10. ECS TASK HEALTH
+-------------------
+
+The ECS task was successfully started on AWS Fargate.
+
+Task status:
+
+RUNNING
+
+Container health status:
+
+HEALTHY
+
+The ECS health check uses the application's /health endpoint.
+
+The successful health response was:
+
+OpsMate Health: OK
+
+
+11. NETWORKING
+--------------
+
+The ECS service was deployed using AWS VPC networking with a
+configured subnet and security group.
+
+The container port 5000 was mapped for application access.
+
+The deployed application was successfully reached through its
+public network endpoint.
+
+
+12. APPLICATION VERIFICATION ON AWS
+-----------------------------------
+
+The deployed application was tested through the public endpoint.
+
+HTTP response:
+
+HTTP/1.1 200 OK
+
+This confirmed that the OpsMate application was successfully
+deployed and accessible through AWS Fargate.
+
+
+13. AMAZON CLOUDWATCH MONITORING
+--------------------------------
+
+Amazon CloudWatch Logs were configured for the ECS application.
+
+Log group:
+
+/ecs/opsmate
+
+CloudWatch logs were successfully generated by the running ECS
+container.
+
+The logs included successful health-check requests such as:
+
+GET /health HTTP/1.1 200
+
+This confirmed that the deployed application was running and
+being monitored through CloudWatch.
+
+
+14. VERSION UPDATE
+------------------
+
+The OpsMate Docker image was updated and deployed using image
+version 2.0.
+
+The ECS task definition was updated to use the new ECR image.
+
+The ECS service successfully launched the updated task.
+
+The updated task was verified as:
+
+RUNNING
+
+and:
+
+HEALTHY
+
+
+15. SECURITY
+------------
+
+Sensitive configuration such as database passwords and AWS
+credentials were not committed to the GitHub repository.
+
+ECS task-definition files containing sensitive environment
+configuration were excluded using .gitignore.
+
+Production deployments should use AWS Secrets Manager or another
+secure secrets-management solution instead of storing credentials
+directly in configuration files.
+
+
+16. GITHUB
+----------
+
+The project source code and safe configuration files were uploaded
+to GitHub.
+
+Repository:
+
+https://github.com/sakshihulgunde/opsmate
+
+Tracked project files include:
+
+.gitignore
+Dockerfile
+app.py
+compose.yaml
+requirements.txt
+README.md
+
+
+17. FINAL RESULT
+----------------
+
+The OpsMate application was successfully:
+
+1. Containerized using Docker.
+2. Built into a Docker image.
+3. Tested inside a Docker container.
+4. Configured with Docker Compose and PostgreSQL.
+5. Stored in Amazon ECR.
+6. Deployed using Amazon ECS.
+7. Run using AWS Fargate.
+8. Configured with an ECS health check.
+9. Connected to Amazon CloudWatch Logs.
+10. Verified through the public application endpoint.
+11. Updated using Docker image version 2.0.
+12. Documented and uploaded to GitHub.
+
+
+18. CONCLUSION
+--------------
+
+This project demonstrates an end-to-end containerized application
+deployment using Docker and AWS.
+
+It provides practical experience with Docker image creation,
+container execution, Docker Compose, Amazon ECR, ECS task
+definitions, ECS services, AWS Fargate, networking, health checks,
+CloudWatch logging, and GitHub version control.
+
+The successful deployment and verification of OpsMate demonstrate
+the complete workflow from source code to a running containerized
+application on AWS.
