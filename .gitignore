@@ -1,0 +1,13 @@
+awscliv2.zip
+aws/
+.env
+*.env
+__pycache__/
+*.pyc
+
+# AWS ECS task definitions - contain environment configuration/secrets
+task-def-v2.json
+task-def-v3.json
+task-def.json
+task-definition.json
+task-definition-register.json
