@@ -1,0 +1,13 @@
+.git
+.gitignore
+.github
+__pycache__
+*.pyc
+.env
+.env.*
+venv
+.venv
+screenshots
+documentation
+docker-deployment-report.txt
+README.md

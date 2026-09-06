@@ -1,0 +1,10 @@
+# OpsMate environment configuration example
+
+DB_HOST=database
+DB_PORT=5432
+DB_NAME=opsmate
+DB_USER=opsmate
+DB_PASSWORD=change-this-password
+
+# Application
+PORT=5000
